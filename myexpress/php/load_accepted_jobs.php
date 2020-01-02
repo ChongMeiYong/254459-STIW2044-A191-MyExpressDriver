@@ -18,6 +18,7 @@ if ($result->num_rows > 0) {
         $joblist[joblatitude] = $row["LATITUDE"];
         $joblist[joblongitude] = $row["LONGITUDE"];
         $joblist[jobrating] = $row["RATING"];
+        $joblist[status] = $row["STATUS"];
         array_push($response["jobs"], $joblist);    
     }
     echo json_encode($response);

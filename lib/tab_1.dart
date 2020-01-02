@@ -225,6 +225,7 @@ class _TabScreenState extends State<TabScreen> {
                             data[index]['joblatitude'],
                             data[index]['joblongitude'],
                             data[index]['jobrating'],
+                            data[index]['status'],
                             widget.user.radius,
                             widget.user.name,
                             widget.user.credit,
@@ -357,6 +358,7 @@ class _TabScreenState extends State<TabScreen> {
       String joblatitude,
       String joblongitude,
       String jobrating,
+      String status,
       String email,
       String name,
       String credit) {
@@ -371,7 +373,8 @@ class _TabScreenState extends State<TabScreen> {
         jobworker: null,
         joblat: joblatitude,
         joblon: joblongitude,
-        jobrating: jobrating);
+        jobrating: jobrating,
+        status: status);
     //print(data);
 
     Navigator.push(

@@ -21,6 +21,7 @@ if ($result->num_rows > 0) {
         $joblist[joblongitude] = $row["LONGITUDE"];
         $joblist[km] = distance($latitude,$longitude,$row["LATITUDE"],$row["LONGITUDE"]);
         $joblist[jobrating] = $row["RATING"];
+        $joblist[status] = $row["STATUS"];
         //$joblist[radius] = $row["LATITUDE"];
        // if (distance($latitude,$longitude,$row["LATITUDE"],$row["LONGITUDE"])<$radius){
             array_push($response["jobs"], $joblist);    

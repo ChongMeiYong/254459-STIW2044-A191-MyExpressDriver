@@ -10,11 +10,12 @@ $longitude = $_POST['longitude'];
 $encoded_string = $_POST["encoded_string"];
 $credit = $_POST['credit'];
 $rating = $_POST['rating'];
+$status = $_POST['status'];
 $decoded_string = base64_decode($encoded_string);
 $mydate =  date('dmYhis');
 $imagename = $mydate.'-'.$email;
 
-$sqlinsert = "INSERT INTO JOB(JOBTITLE,JOBOWNER,JOBDESC,JOBPRICE,JOBIMAGE,LATITUDE,LONGITUDE,RATING) VALUES ('$jobtitle','$email','$jobdesc','$jobprice','$imagename','$latitude','$longitude','$rating')";
+$sqlinsert = "INSERT INTO JOBS(JOBTITLE,JOBOWNER,JOBDESC,JOBPRICE,JOBIMAGE,LATITUDE,LONGITUDE,RATING,STATUS) VALUES ('$jobtitle','$email','$jobdesc','$jobprice','$imagename','$latitude','$longitude','$rating','$status')";
 
 if ($credit>0){
     if ($conn->query($sqlinsert) === TRUE) {

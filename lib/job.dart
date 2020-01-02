@@ -9,7 +9,8 @@ class Job {
       jobworker,
       joblat,
       joblon,
-      jobrating;
+      jobrating,
+      status;
 
   Job(
       {this.jobid,
@@ -22,5 +23,6 @@ class Job {
       this.jobworker,
       this.joblat,
       this.joblon,
-      this.jobrating});
+      this.jobrating,
+      this.status});
 }

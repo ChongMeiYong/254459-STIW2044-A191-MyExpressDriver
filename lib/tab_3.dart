@@ -7,8 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:my_express2/user.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:toast/toast.dart';
-
 import 'SlideRightRoute.dart';
+import 'deliverdetail.dart';
 import 'job.dart';
 import 'jobdetail.dart';
 
@@ -211,7 +211,7 @@ class _TabScreen3State extends State<TabScreen3> {
                       child: Card(
                         elevation: 2,
                         child: InkWell(
-                          onTap: () => _onJobDetail(
+                          onTap: () => _onDeliverDetail(
                             data[index]['jobid'],
                             data[index]['jobprice'],
                             data[index]['jobdesc'],
@@ -222,6 +222,7 @@ class _TabScreen3State extends State<TabScreen3> {
                             data[index]['joblatitude'],
                             data[index]['joblongitude'],
                             data[index]['jobrating'],
+                            data[index]['status'],
                             widget.user.radius,
                             widget.user.name,
                             widget.user.credit,
@@ -276,7 +277,15 @@ class _TabScreen3State extends State<TabScreen3> {
                                         SizedBox(
                                           height: 5,
                                         ),
+                                        Text("Status : " + data[index]['status']),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
                                         Text(data[index]['jobtime']),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        
                                       ],
                                     ),
                                   ),
@@ -363,7 +372,7 @@ class _TabScreen3State extends State<TabScreen3> {
     return null;
   }
 
-  void _onJobDetail(
+  void _onDeliverDetail(
       String jobid,
       String jobprice,
       String jobdesc,
@@ -374,6 +383,7 @@ class _TabScreen3State extends State<TabScreen3> {
       String joblatitude,
       String joblongitude,
       String jobrating,
+      String status,
       String email,
       String name,
       String credit) {
@@ -388,11 +398,12 @@ class _TabScreen3State extends State<TabScreen3> {
         jobworker: null,
         joblat: joblatitude,
         joblon: joblongitude,
-        jobrating: jobrating);
+        jobrating: jobrating,
+        status: status);
     //print(data);
 
     Navigator.push(
-        context, SlideRightRoute(page: JobDetail(job: job, user: widget.user)));
+        context, SlideRightRoute(page: DeliverDetail(job: job, user: widget.user)));
   }
   
 }
