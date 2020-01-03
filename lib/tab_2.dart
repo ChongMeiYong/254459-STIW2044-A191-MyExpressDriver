@@ -1,12 +1,16 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:geolocator/geolocator.dart';
-import 'package:progress_dialog/progress_dialog.dart';
+import 'dart:convert';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart';
 import 'package:my_express2/user.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:toast/toast.dart';
+import 'SlideRightRoute.dart';
+import 'deliverdetail.dart';
+import 'job.dart';
+import 'jobdetail.dart';
 
 double perpage = 1;
 
@@ -30,7 +34,6 @@ class _TabScreen2State extends State<TabScreen2> {
   @override
   void initState() {
     super.initState();
-    //init();
     refreshKey = GlobalKey<RefreshIndicatorState>();
     _getCurrentLocation();
   }
@@ -45,7 +48,7 @@ class _TabScreen2State extends State<TabScreen2> {
             resizeToAvoidBottomPadding: false,
             body: RefreshIndicator(
               key: refreshKey,
-              color: Colors.blue[300],
+              color: Color.fromRGBO(159, 30, 99, 1),
               onRefresh: () async {
                 await refreshList();
               },
@@ -60,7 +63,6 @@ class _TabScreen2State extends State<TabScreen2> {
                             Stack(children: <Widget>[
                               Image.asset(
                                 "assets/images/background.png",
-                                scale: 0.8,
                                 fit: BoxFit.fitWidth,
                               ),
                               Column(
@@ -179,7 +181,7 @@ class _TabScreen2State extends State<TabScreen2> {
                             Container(
                               color: Colors.blue[300],
                               child: Center(
-                                child: Text("PickUp - Delivery ",
+                                child: Text("Accepted PickUp Jobs ",
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -209,9 +211,27 @@ class _TabScreen2State extends State<TabScreen2> {
                       child: Card(
                         elevation: 2,
                         child: InkWell(
-                          onLongPress: () => _onJobDelete(
-                              data[index]['jobid'].toString(),
-                              data[index]['jobtitle'].toString()),
+                          onTap: () => _onDeliverDetail(
+                            data[index]['jobid'],
+                            data[index]['jobprice'],
+                            data[index]['jobdesc'],
+                            data[index]['jobowner'],
+                            data[index]['jobimage'],
+                            data[index]['jobtime'],
+                            data[index]['jobtitle'],
+                            data[index]['joblatitude'],
+                            data[index]['joblongitude'],
+                            data[index]['jobrating'],
+                            data[index]['status'],
+                            widget.user.radius,
+                            widget.user.name,
+                            widget.user.credit,
+                          ),
+                      child: Padding(
+                      padding: EdgeInsets.all(2.0),
+                      child: Card(
+                        elevation: 2,
+                        child: InkWell(
                           child: Padding(
                             padding: const EdgeInsets.all(2.0),
                             child: Row(
@@ -257,7 +277,15 @@ class _TabScreen2State extends State<TabScreen2> {
                                         SizedBox(
                                           height: 5,
                                         ),
+                                        Text("Status : " + data[index]['status']),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
                                         Text(data[index]['jobtime']),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        
                                       ],
                                     ),
                                   ),
@@ -266,7 +294,7 @@ class _TabScreen2State extends State<TabScreen2> {
                             ),
                           ),
                         ),
-                      ),
+                      )))),
                     );
                   }),
             )));
@@ -304,16 +332,14 @@ class _TabScreen2State extends State<TabScreen2> {
   }
 
   Future<String> makeRequest() async {
-    String urlLoadJobs =
-        "http://alifmirzaandriyanto.com/mydriver/php/load_jobs.php";
+    String urlLoadJobs = "http://alifmirzaandriyanto.com/mydriver/php/load_accepted_jobs.php";
     ProgressDialog pr = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false);
-    pr.style(message: "Loading Jobs");
+    pr.style(message: "Loading All Accepted Jobs");
     pr.show();
     http.post(urlLoadJobs, body: {
       "email": widget.user.email ?? "notavail",
-      "latitude": _currentPosition.latitude.toString(),
-      "longitude": _currentPosition.longitude.toString(),
+
     }).then((res) {
       setState(() {
         var extractdata = json.decode(res.body);
@@ -332,163 +358,52 @@ class _TabScreen2State extends State<TabScreen2> {
 
   Future init() async {
     if (widget.user.email=="user@noregister"){
-      Toast.show("Please register to view delivery service", context,
+      Toast.show("Please register to view accepted Jobs", context,
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
       return;
     }else{
-      //this.makeRequest();
+      this.makeRequest();
     }
   }
 
   Future<Null> refreshList() async {
     await Future.delayed(Duration(seconds: 2));
-    //this.makeRequest();
+    this.makeRequest();
     return null;
   }
 
-  void _onJobDelete(String jobid, String jobname) {
-    print("Delete " + jobid);
-    _showDialog(jobid, jobname);
+  void _onDeliverDetail(
+      String jobid,
+      String jobprice,
+      String jobdesc,
+      String jobowner,
+      String jobimage,
+      String jobtime,
+      String jobtitle,
+      String joblatitude,
+      String joblongitude,
+      String jobrating,
+      String status,
+      String email,
+      String name,
+      String credit) {
+    Job job = new Job(
+        jobid: jobid,
+        jobtitle: jobtitle,
+        jobowner: jobowner,
+        jobdes: jobdesc,
+        jobprice: jobprice,
+        jobtime: jobtime,
+        jobimage: jobimage,
+        jobworker: null,
+        joblat: joblatitude,
+        joblon: joblongitude,
+        jobrating: jobrating,
+        status: status);
+    //print(data);
+
+    Navigator.push(
+        context, SlideRightRoute(page: DeliverDetail(job: job, user: widget.user)));
   }
-
-  void _showDialog(String jobid, String jobname) {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Delete " + jobname),
-          content: new Text("Are your sure?"),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Yes"),
-              onPressed: () {
-                Navigator.of(context).pop();
-                deleteRequest(jobid);
-              },
-            ),
-            new FlatButton(
-              child: new Text("No"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<String> deleteRequest(String jobid) async {
-    String urlLoadJobs = "http://alifmirzaandriyanto.com/mydriver/php/delete_job.php";
-    ProgressDialog pr = new ProgressDialog(context,
-        type: ProgressDialogType.Normal, isDismissible: false);
-    pr.style(message: "Deleting Jobs");
-    pr.show();
-    http.post(urlLoadJobs, body: {
-      "jobid": jobid,
-    }).then((res) {
-      print(res.body);
-      if (res.body == "success") {
-        Toast.show("Success", context,
-            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-        init();
-      } else {
-        Toast.show("Failed", context,
-            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-      }
-    }).catchError((err) {
-      print(err);
-      pr.dismiss();
-    });
-    return null;
-  }
-}
-class SlideMenu extends StatefulWidget {
-  final Widget child;
-  final List<Widget> menuItems;
-
-  SlideMenu({this.child, this.menuItems});
-
-  @override
-  _SlideMenuState createState() => new _SlideMenuState();
-}
-
-class _SlideMenuState extends State<SlideMenu> with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-
-  @override
-  initState() {
-    super.initState();
-    _controller = new AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
-  }
-
-  @override
-  dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final animation = new Tween(
-      begin: const Offset(0.0, 0.0),
-      end: const Offset(-0.2, 0.0)
-    ).animate(new CurveTween(curve: Curves.decelerate).animate(_controller));
-
-    return new GestureDetector(
-      onHorizontalDragUpdate: (data) {
-        // we can access context.size here
-        setState(() {
-          _controller.value -= data.primaryDelta / context.size.width;
-        });
-      },
-      onHorizontalDragEnd: (data) {
-        if (data.primaryVelocity > 2500)
-          _controller.animateTo(.0); //close menu on fast swipe in the right direction
-        else if (_controller.value >= .5 || data.primaryVelocity < -2500) // fully open if dragged a lot to left or on fast swipe to left
-          _controller.animateTo(1.0);
-        else // close if none of above
-          _controller.animateTo(.0);
-      },
-      child: new Stack(
-        children: <Widget>[
-          new SlideTransition(position: animation, child: widget.child),
-          new Positioned.fill(
-            child: new LayoutBuilder(
-              builder: (context, constraint) {
-                return new AnimatedBuilder(
-                  animation: _controller,
-                  builder: (context, child) {
-                    return new Stack(
-                      children: <Widget>[
-                        new Positioned(
-                          right: .0,
-                          top: .0,
-                          bottom: .0,
-                          width: constraint.maxWidth * animation.value.dx * -1,
-                          child: new Container(
-                            color: Colors.black26,
-                            child: new Row(
-                              children: widget.menuItems.map((child) {
-                                return new Expanded(
-                                  child: child,
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-          )
-        ],
-      ),
-    );
-  }
+  
 }

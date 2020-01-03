@@ -39,7 +39,7 @@ class _RegisterDriverState extends State<RegisterDriver> {
         child: Scaffold(
           resizeToAvoidBottomPadding: false,
           appBar: AppBar(
-            backgroundColor: Colors.blueAccent,
+            backgroundColor: Colors.blue[300],
             title: Text(
               "Registration",
               //style: TextStyle(color: Colors.white),

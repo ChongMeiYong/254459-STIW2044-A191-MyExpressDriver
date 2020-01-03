@@ -4,8 +4,6 @@ import 'package:my_express2/user.dart';
 import 'package:my_express2/tab_1.dart';
 import 'package:my_express2/tab_2.dart';
 import 'package:my_express2/tab_3.dart';
-import 'package:my_express2/tab_4.dart';
-
 
 class MainScreen extends StatefulWidget {
   final User user;
@@ -28,7 +26,6 @@ class _MainScreenState extends State<MainScreen> {
       TabScreen(user: widget.user),
       TabScreen2(user: widget.user),
       TabScreen3(user: widget.user),
-      TabScreen4(user: widget.user),
     ];
   }
 
@@ -57,10 +54,6 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
             title: Text("PickUp"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list, ),
-            title: Text("Posted Job"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.event, ),

@@ -72,6 +72,13 @@ class DetailInterface extends StatefulWidget {
 class _DetailInterfaceState extends State<DetailInterface> {
   Completer<GoogleMapController> _controller = Completer();
   CameraPosition _myLocation;
+  String _selectedStatus = 'PENDING';
+
+  void selectStatus(String value){
+    setState((){
+      _selectedStatus = value;
+    });
+  }
 
   @override
   void initState() {
@@ -186,7 +193,7 @@ class _DetailInterfaceState extends State<DetailInterface> {
   }
 
 void _updateStatus() {
-    //TextEditingController passController = TextEditingController();
+    TextEditingController statusController = TextEditingController();
     // flutter defined function
     print(widget.user.name);
     if (widget.user.name == "not register") {
@@ -199,38 +206,44 @@ void _updateStatus() {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Change Delivery Status?"),
-          content: Container(
-            height: 100,
-            child: DropdownExample(),
-          ),
+          title: new Text("Change Delivery Status"),
+          content: new TextField(
+              controller: statusController,
+              decoration: InputDecoration(
+                labelText: 'Status',
+                //icon: Icon(Icons.person),
+              )),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
               child: new Text("Yes"),
               onPressed: () {
+                if (statusController.text.length < 5) {
+                  Toast.show(
+                      "Status should be more than 5 characters long", context,
+                      duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                  return;
+                }
                 http.post(urlupdate, body: {
-                  //"email": widget.user.email,
-                  "jobname": widget.job.jobtitle,
-                  "status": _value,
+                  "jobid": widget.job.jobid,
+                  "status": statusController.text,
                 }).then((res) {
                   var string = res.body;
                   List dres = string.split(",");
                   if (dres[0] == "success") {
                     print('in success');
                     setState(() {
-                      widget.job.status= dres[12];
+                      widget.job.status = dres[12];
                       if (dres[0] == "success") {
-                        Toast.show("Success", context,
-                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-                        savepref(_value);
-                        Navigator.of(context).pop();
+                        print("in setstate");
+                        widget.job.status = dres[12];
                       }
                     });
                   } else {}
                 }).catchError((err) {
                   print(err);
                 });
+                Navigator.of(context).pop();
               },
             ),
             new FlatButton(
@@ -260,6 +273,9 @@ class DropdownExample extends StatefulWidget {
 }
 
 class _DropdownExampleState extends State<DropdownExample> {
+  String get value => null;
+
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -267,7 +283,7 @@ class _DropdownExampleState extends State<DropdownExample> {
         items: [
           DropdownMenuItem<String>(
             child: Text('PENDING'),
-            value: '',
+            value: 'PENDING',
           ),
           DropdownMenuItem<String>(
             child: Text('DELIVERING'),
@@ -281,14 +297,17 @@ class _DropdownExampleState extends State<DropdownExample> {
         onChanged: (String value) {
           setState(() {
             _value = value;
+            selectStatus(value);
           });
         },
         hint: Text('Select Status'),
-        value: _value,
+        value: _value, 
+        
       ),
     );
   }
 
+  
    void _onLogin(String email, BuildContext ctx) {
      String urlgetuser = "http://alifmirzaandriyanto.com/mydriver/php/get_user.php";
 
@@ -314,4 +333,7 @@ class _DropdownExampleState extends State<DropdownExample> {
       print(err);
     });
   }
+}
+
+void selectStatus(String value) {
 }
