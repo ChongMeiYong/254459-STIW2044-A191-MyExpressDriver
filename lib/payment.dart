@@ -42,7 +42,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   Future<bool> _onBackPressAppBar() async {
     print("onbackpress payment");
-    String urlgetuser = "http://alifmirzaandriyanto/mydriver/php/get_user.php";
+    String urlgetuser = "http://alifmirzaandriyanto.com//mydriver/php/get_user.php";
 
     http.post(urlgetuser, body: {
       "email": widget.user.email,
