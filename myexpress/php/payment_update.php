@@ -12,10 +12,9 @@ $data = array(
     'paid' => $_GET['billplz']['paid'],
     'x_signature' => $_GET['billplz']['x_signature']
 );
-
 $paidstatus = $_GET['billplz']['paid'];
 if ($paidstatus=="true"){
-    $paidstatus = "Success";
+    $paidstatus = "success";
 }else{
     $paidstatus = "Failed";
 }
@@ -33,8 +32,7 @@ foreach ($data as $key => $value) {
  
 $signed= hash_hmac('sha256', $signing, 'S-GYgD_j7rr-qXnSClJN7KPw');
 if ($signed === $data['x_signature']) {
-
-    if ($paidstatus == "Success"){
+    if ($paidstatus == "success"){
         //echo "STATUS IN";
         if ($amount == "10"){
             $credit = '50';
@@ -46,7 +44,7 @@ if ($signed === $data['x_signature']) {
             $credit = '150';
         }
         
-        $sqlsearch = "SELECT * FROM USER WHERE EMAIL = '$userid'";
+        $sqlsearch = "SELECT * FROM DRIVER WHERE EMAIL = '$userid'";
         $resultuser = $conn->query($sqlsearch);
         if ($resultuser->num_rows > 0) {
             while ($row = $resultuser ->fetch_assoc()){
@@ -61,19 +59,13 @@ if ($signed === $data['x_signature']) {
             }
         }
     }
-        echo '<br><br><body><div><h2><br><br><center>Receipt</center></h1>
-        <table border=1 width=80% align=center>
-        <tr><td>Order id</td><td>'.$orderid.'</td></tr>
-        <tr><td>Receipt ID</td><td>'.$receiptid.'</td></tr>
-        <tr><td>Email to </td><td>'.$userid. ' </td></tr>
-        <td>Amount </td><td>RM '.$amount.'</td></tr>
-        <tr><td>Payment Status </td><td>'.$paidstatus.'</td></tr>
-        <tr><td>Date </td><td>'.date("d/m/Y").'</td></tr>
-        <tr><td>Time </td><td>'.date("h:i a").'</td></tr></table>
-        <br><p><center>Press back button to return to MyExpress Driver</center></p></div></body>';
-
+        echo '<br><br><body><div><h2><br><br>
+        <center>Receipt</center></h1><table border=1 width=80% align=center><tr><td>Order id</td>
+        <td>'.$orderid.'</td></tr><tr><td>Receipt ID</td><td>'.$receiptid.'</td></tr><tr><td>Email to </td>
+        <td>'.$userid. ' </td></tr><td>Amount </td><td>RM '.$amount.'</td></tr><tr><td>Payment Status </td>
+        <td>'.$paidstatus.'</td></tr><tr><td>Date </td><td>'.date("d/m/Y").'</td></tr><tr><td>Time </td>
+        <td>'.date("h:i a").'</td></tr></table><br><p><center>Press back button to return to MyExpress Driver</center></p></div></body>';
  } else {
     echo 'Not Match!';
 }
-
 ?>

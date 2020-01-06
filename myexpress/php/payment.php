@@ -20,7 +20,7 @@ $data = array(
           'amount' => $amount * 100, // RM20
 		  'description' => 'Payment for order id '.$orderid,
           'callback_url' => "http://alifmirzaandriyanto.com/mydriver/return_url",
-          'redirect_url' => "http://alifmirzaandriyanto.com/mydriver/php/payment_update.php?userid=$email&mobile=$mobile&amount=$amount&orderid=$orderid" 
+          'redirect_url' => "http://alifmirzaandriyanto.com/mydriver/php/payment_update.php?userid=$email&mobile=$mobile&amount=$amount&orderid=$orderid"
 );
 
 

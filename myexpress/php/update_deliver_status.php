@@ -1,25 +1,26 @@
 <?php
 error_reporting(0);
 include_once("dbconnect.php");
-$jobtitle = $_POST['jobtitle'];
-$status = $_POST['status'];
-$latitude = $_POST['latitude'];
-$longitude = $_POST['longitude'];
-$sql = "SELECT * FROM JOBS WHERE JOBTITLE = '$jobtitle'";
 
-if (isset($name) && (!empty($name))){
-    $sql = "UPDATE JOBS SET STATUS = '$status' WHERE JOBTITLE = '$jobtitle";
+$jobid = $_POST['jobid'];
+$status = $_POST['status'];
+
+$usersql = "SELECT * FROM JOBS WHERE JOBID = '$jobid'";
+
+if (isset($status) && (!empty($status))){
+    $sql = "UPDATE JOBS SET STATUS = '$status' WHERE JOBID = '$jobid'";
 }
 
 
 if ($conn->query($sql) === TRUE) {
-    $result = $conn->query($sql);
+    $result = $conn->query($usersql);
 if ($result->num_rows > 0) {
         while ($row = $result ->fetch_assoc()){
-        echo "success,".$row["JOBTITLE"];
+        echo "success,".$row["JOBID"].",".$row["JOBTITLE"].",".$row["JOBOWNER"].",".$row["JOBSESC"].",".$row["JOBPRICE"].",".$row["JOBTIME"].",".$row["JOBIMAGE"].",".$row["JOBWORKER"]
+        .",".$row["LATITUDE"].",".$row["LONGITUDE"].",".$row["RATING"].",".$row["STATUS"];
         }
     }else{
-        echo "failed,null";
+        echo "failed,null,null,null,null,null,null,null,null,null,null,null,null,null";
     }
 } else {
     echo "error";
